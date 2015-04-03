@@ -1,0 +1,121 @@
+原文出处：官方WIKI
+
+原文作者：
+
+授权许可：
+
+创作共用协议Attribution-ShareAlike 2.0
+GNU自由文档许可证
+翻译人员：drivel (drivelsun@gmail.com)
+
+校正人员：
+
+贡献人员：luojie-dune
+
+适用版本： 文章状态：翻译完成
+
+目录
+[隐藏]
+1 ClamAV 简介以及适用范围
+1.1 需要反病毒软件？免费么？
+2 ClamAV 安装设置
+2.1 安装ClamAV
+2.2 怎么使用ClamAV
+2.2.1 升级我的病毒库
+2.2.2 使用ClamAV扫描我计算机中的文件
+2.2.3 使ClamAV以daemon防护的方式运行
+2.2.4 如何知道clamav-daemon是否运行了?
+2.2.5 如何删除病毒文件？
+2.2.6 如何知道我现在使用的ClamAV版本？
+2.2.7 如何知道更多的参数
+2.2.8 如何使ClamAV按计划自动运行
+3 自动扫描病毒
+4 手动扫描病毒
+[编辑] ClamAV 简介以及适用范围
+ClamAV是一个在命令行下查毒软件，因为它不将杀毒作为主要功能，默认只能查出您计算机内的病毒，但是无法清除，至多删除文件。ClamAV可以工作很多的平台上，但是有少数无法支持，这就要取决您所使用的平台的流行程度了。另外它主要是来防护一些WINDOWS病毒和木马程序。另外，这是一个面向服务端的软件。
+
+[编辑] 需要反病毒软件？免费么？
+绝大多数的Linux是先进的，所以，很少的病毒能够在linux上运行和繁衍。而且，由于目前PC都使用的是Windows，所以病毒制造者们更愿意去写Windows下的病毒。但是还有很多的原因能致使您使用一些病毒扫描程序的，比如：
+
+扫描在您计算机上的Windows设备
+扫描在本地网络中的Windows计算机
+扫描您即将要传送给别人的文件
+扫描您将要发送给别人的EMAIL
+[编辑] ClamAV 安装设置
+[编辑] 安装ClamAV
+sudo apt-get install clamav
+这里有两种的ClamAV供您选择 1.手动：安装ClamAV的安装包 2.自动：安装ClamAV-daemon 这两种都可以安装ClamAV，但是要是使用上面的方法，是手动的。 在您安装完成之后，您可能被程序问及一些问题，比如怎么去升级。这就需要您选择一个离您比较近的服务器来升级。ClamAV的升级程序是很小的，所以很值得去自动升级。
+
+[编辑] 怎么使用ClamAV
+这部分将会介绍安装之后的使用
+
+[编辑] 升级我的病毒库
+运行 sudo  freshclam.
+
+
+
+您将会看见以下说明
+
+user@ubuntu:/etc/clamav # sudo freshclam
+ClamAV update process started at Wed Apr 27 00:06:47 2005
+main.cvd is up to date (version: 31, sigs: 33079, f-level: 4, builder: tkojm)
+daily.cvd is up to date (version: 855, sigs: 714, f-level: 4, builder: ccordes)
+[编辑] 使用ClamAV扫描我计算机中的文件
+运行 clamscan.
+
+这里附带一些例子
+
+扫描所有用户的主目录就使用 clamscan -r /home
+扫描您计算机上的所有文件并且显示所有的文件的扫描结果，就使用 clamscan -r /
+扫描您计算机上的所有文件并且显示有问题的文件的扫描结果， 就使用 clamscan -r --bell -i /
+当clamAV扫描完所有文件的时候，会显示如下的类似报告
+
+----------- SCAN SUMMARY -----------
+Known viruses: 33840
+Scanned directories: 145
+Scanned files: 226
+Infected files: 1
+Data scanned: 54.22 MB
+I/O buffer size: 131072 bytes
+Time: 20.831 sec (0 m 20 s)
+IconsPage?action=AttachFile&do=get&target=info.png ClamAV只会去扫描对于ClamAV可以读取的文件。 果您想扫描所有文件，在命令前加上 sudo .
+
+[编辑] 使ClamAV以daemon防护的方式运行
+安装clamav-daemon就可以了，clamav-daemon将会建立一个名为'clamav'的帐户，这是为了可以使ClamAV扫描一些系统文件，比如您的Email存放的地方，您可以添加'clamav'为这些文件或者目录的所有者。
+
+[编辑] 如何知道clamav-daemon是否运行了?
+查看进程列表就可以了: ps ax | grep [c]lamd
+
+[编辑] 如何删除病毒文件？
+在扫描的时候，您可以添加'--remove'
+
+[编辑] 如何知道我现在使用的ClamAV版本？
+执行 clamscan -V:
+
+user@ubuntu:/etc/clamav # clamscan -V
+ClamAV 0.83/855/Tue Apr 26 06:40:32 2005
+[编辑] 如何知道更多的参数
+使用 man clamscan.
+
+[编辑] 如何使ClamAV按计划自动运行
+您可以使用'at'命令来使clamscan和freshclam运行，比如
+
+at 3:30 tomorrow
+at>clamscan -i /home/user > mail user@example.com
+at> <CTRL-D>
+job 3 at 2005-04-28 03:30
+或者编辑 /etc/crontab 加入以下内容
+
+0 3 * * * root /usr/bin/freshclam --quiet -l /var/log/clamav/clamav.log ＃＃每天3点升级
+
+[编辑] 自动扫描病毒
+请参阅 如何安装 ClamAV AntiVirus 病毒防制服务器?
+例如每天子时自动扫描 文件/目录 来搜寻病毒
+* * * * * 分别代表 分 时 日 月 年
+export EDITOR=gedit && sudo crontab -e
+将下面这一行加到文件最后面
+00 00 * * * sudo clamscan -r /location_of_files_or_folders
+[编辑] 手动扫描病毒
+请参阅 Ubuntu简介
+请参阅 如何安装 ClamAV AntiVirus 病毒防制服务器?
+sudo clamscan -r /location_of_files_or_folders
